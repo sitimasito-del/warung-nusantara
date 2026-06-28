@@ -316,38 +316,13 @@ return menu.available!==false&&matchCategory&&matchSearch;
 
 menuList.innerHTML=filtered.map(menu=>`
 <div class="menu-card">
-
-<div class="photo">
-<img src="${menu.imageUrl}"
-alt="${menu.name}"
-onerror="this.src='https://placehold.co/400x300?text=${encodeURIComponent(menu.name)}'">
-</div>
-
+${menu.imageUrl?`<div class="photo"><img src="${menu.imageUrl}" alt="${menu.name}" onerror="this.style.display='none';this.parentElement.textContent=this.alt"></div>`:foodFallback(menu.name)}
 <div class="menu-body">
-
 <h3>${menu.name}</h3>
-
-<span class="tag ${
-menu.category=="Minuman"
-?"minuman"
-:menu.category=="Camilan"
-?"camilan"
-:""
-}">
-${menu.category}
-</span>
-
-<div class="price">
-${rupiah(menu.price)}
+<span class="tag ${menu.category==="Minuman"?"minuman":menu.category==="Camilan"?"camilan":""}">${menu.category}</span>
+<div class="price">${rupiah(menu.price)}</div>
+<button class="add" onclick="tambahCart('${menu.id}')">+ Tambah</button>
 </div>
-
-<button class="add"
-onclick="tambahCart('${menu.id}')">
-+ Tambah
-</button>
-
-</div>
-
 </div>
 `).join("");
 }
