@@ -120,6 +120,30 @@
   .submit-btn:disabled{background:var(--canvas-2); color:var(--text-dim); cursor:not-allowed;}
   .hint{font-size:12px; color:var(--text-dim); margin-top:4px;}
 
+  .link-btn{
+    background:none; border:none; color:var(--turmeric); font-size:12px; cursor:pointer;
+    font-weight:600; padding:0;
+  }
+  .link-btn:hover{text-decoration:underline;}
+  .mini-form{
+    margin-top:8px; padding:10px; background:var(--canvas-2); border:1px solid var(--line);
+    border-radius:8px; display:grid; gap:7px;
+  }
+  .mini-form input{
+    background:var(--ink); color:var(--text); border:1px solid var(--line);
+    padding:7px 10px; border-radius:6px; font-size:13px; width:100%;
+  }
+  .mini-btn{
+    background:var(--daun); color:#fff; border:none; padding:8px; border-radius:6px;
+    font-weight:600; font-size:13px; cursor:pointer;
+  }
+  .mini-btn:hover{filter:brightness(1.1);}
+  .mini-btn-secondary{
+    background:transparent; color:var(--text-dim); border:1px solid var(--line);
+    padding:8px 14px; border-radius:6px; font-weight:600; font-size:13px; cursor:pointer;
+  }
+  .mini-btn-secondary:hover{color:var(--text); border-color:var(--text-dim);}
+
   /* kitchen ticket */
   .tickets{display:flex; flex-direction:column; gap:14px; max-height:740px; overflow-y:auto; padding-right:4px;}
   .ticket{
@@ -153,6 +177,11 @@
     padding:6px 12px; border-radius:6px; cursor:pointer; font-weight:600;
   }
   .advance-btn:disabled{background:#cfc6b3; color:#8b8270; cursor:default;}
+  .delete-btn{
+    background:none; border:1px solid #b8503a; color:#b8503a; font-size:11px;
+    padding:5px 10px; border-radius:6px; cursor:pointer; font-weight:600;
+  }
+  .delete-btn:hover{background:#b8503a; color:#fff;}
   .empty{color:var(--text-dim); font-size:13px; padding:20px 0; text-align:center;}
 </style>
 </head>
@@ -180,6 +209,7 @@
       <div>
         <span class="eyebrow">Pelanggan</span>
         <h2 id="restaurantName">Menu</h2>
+        <p id="restaurantMeta" class="hint" style="margin-top:6px;"></p>
       </div>
     </div>
     <div id="menuGrid" class="menu-grid"><p class="empty">Memuat menu…</p></div>
@@ -191,8 +221,21 @@
 
       <div class="order-form">
         <div>
-          <label for="customerSelect">Pelanggan</label>
+          <div style="display:flex; justify-content:space-between; align-items:baseline;">
+            <label for="customerSelect" style="margin-bottom:0;">Pelanggan</label>
+            <button type="button" id="toggleNewCustomer" class="link-btn">+ Pelanggan baru</button>
+          </div>
           <select id="customerSelect"><option value="">Memuat pelanggan…</option></select>
+
+          <div id="newCustomerForm" class="mini-form" style="display:none;">
+            <input type="text" id="newCustomerName" placeholder="Nama pelanggan">
+            <input type="text" id="newCustomerPhone" placeholder="No. HP (contoh: 0812xxxxxxx)">
+            <div style="display:flex; gap:8px;">
+              <button type="button" id="addCustomerBtn" class="mini-btn" style="flex:1;">Simpan pelanggan</button>
+              <button type="button" id="cancelCustomerBtn" class="mini-btn-secondary">Batal</button>
+            </div>
+            <p class="hint" id="newCustomerHint"></p>
+          </div>
         </div>
         <div>
           <label for="tableNumber">Nomor meja</label>
@@ -272,6 +315,9 @@ document.getElementById("restaurantSelect").addEventListener("change", e => {
 function onRestaurantChange(){
   const r = restaurants.find(x => x.id === currentRestaurantId);
   document.getElementById("restaurantName").textContent = r ? "Menu — " + r.name : "Menu";
+  document.getElementById("restaurantMeta").textContent = r
+    ? `📍 ${r.address || "-"} · 🕒 Buka ${r.openHours || "-"}`
+    : "";
   if (unsubMenus) unsubMenus();
   unsubMenus = db.collection("restaurants").doc(currentRestaurantId).collection("menus")
     .onSnapshot(snap => {
@@ -337,6 +383,47 @@ db.collection("customers").onSnapshot(snap => {
   const sel = document.getElementById("customerSelect");
   sel.innerHTML = `<option value="">— pilih pelanggan —</option>` +
     customers.map(c => `<option value="${c.id}">${c.name} (${c.phone || "-"})</option>`).join("");
+});
+
+// ---------- 4b. Tambah pelanggan baru dari UI ----------
+document.getElementById("toggleNewCustomer").addEventListener("click", () => {
+  const form = document.getElementById("newCustomerForm");
+  form.style.display = form.style.display === "none" ? "grid" : "none";
+});
+
+document.getElementById("cancelCustomerBtn").addEventListener("click", () => {
+  document.getElementById("newCustomerForm").style.display = "none";
+  document.getElementById("newCustomerName").value = "";
+  document.getElementById("newCustomerPhone").value = "";
+  document.getElementById("newCustomerHint").textContent = "";
+});
+
+document.getElementById("addCustomerBtn").addEventListener("click", async () => {
+  const hint = document.getElementById("newCustomerHint");
+  const name = document.getElementById("newCustomerName").value.trim();
+  const phone = document.getElementById("newCustomerPhone").value.trim();
+
+  if (!isConfigured){ hint.textContent = "Firebase belum dikonfigurasi."; return; }
+  if (!name){ hint.textContent = "Nama wajib diisi."; return; }
+
+  const btn = document.getElementById("addCustomerBtn");
+  btn.disabled = true; hint.textContent = "Menyimpan…";
+  try{
+    const ref = await db.collection("customers").add({
+      name,
+      phone: phone || "",
+      loyaltyPoints: 0
+    });
+    document.getElementById("customerSelect").value = ref.id; // auto-pilih pelanggan baru
+    document.getElementById("newCustomerName").value = "";
+    document.getElementById("newCustomerPhone").value = "";
+    hint.textContent = "✅ Pelanggan tersimpan.";
+  } catch(err){
+    console.error(err);
+    hint.textContent = "Gagal menyimpan: " + err.message;
+  } finally {
+    btn.disabled = false;
+  }
 });
 
 // ---------- 5. Kirim pesanan (orders + sub-koleksi orderItems) ----------
@@ -432,6 +519,7 @@ async function renderTickets(orders){
             onclick="advanceStatus('${o.id}', '${nextStatus}')">
             ${nextStatus ? "→ " + STATUS_LABEL[nextStatus] : "Selesai"}
           </button>
+          <button class="delete-btn" onclick="deleteOrder('${o.id}')">🗑 Hapus</button>
         </div>
       </div>
     `;
@@ -442,6 +530,22 @@ async function renderTickets(orders){
 function advanceStatus(orderId, nextStatus){
   if (!nextStatus) return;
   db.collection("orders").doc(orderId).update({ status: nextStatus });
+}
+
+async function deleteOrder(orderId){
+  if (!confirm("Hapus pesanan ini? Tindakan tidak bisa dibatalkan.")) return;
+  try{
+    // Firestore tidak otomatis menghapus sub-koleksi saat dokumen induk dihapus,
+    // jadi orderItems harus dihapus manual satu per satu dulu.
+    const itemsSnap = await db.collection("orders").doc(orderId).collection("orderItems").get();
+    const batch = db.batch();
+    itemsSnap.docs.forEach(d => batch.delete(d.ref));
+    batch.delete(db.collection("orders").doc(orderId));
+    await batch.commit();
+  } catch(err){
+    console.error(err);
+    alert("Gagal menghapus pesanan: " + err.message);
+  }
 }
 </script>
 </body>
