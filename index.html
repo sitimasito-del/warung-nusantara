@@ -165,6 +165,10 @@
   .ticket-head .table{font-family:'JetBrains Mono'; font-weight:700; font-size:15px;}
   .ticket-head .time{font-family:'JetBrains Mono'; font-size:11px; color:#6b6250;}
   .ticket .cust{font-size:12.5px; color:#54493a; margin-bottom:8px;}
+  .ticket .resto-name{
+    font-size:11px; color:#8a7e63; text-transform:uppercase; letter-spacing:0.05em;
+    font-weight:600; margin-bottom:2px;
+  }
   .ticket .items{font-family:'JetBrains Mono'; font-size:12.5px; line-height:1.65; margin-bottom:10px;}
   .ticket .items div{display:flex; justify-content:space-between;}
   .ticket .total{font-weight:700; border-top:1px dashed #b8ad95; padding-top:6px; margin-bottom:10px; display:flex; justify-content:space-between;}
@@ -500,6 +504,7 @@ async function renderTickets(orders){
     const itemsSnap = await db.collection("orders").doc(o.id).collection("orderItems").get();
     const items = itemsSnap.docs.map(d => d.data());
     const customer = customers.find(c => c.id === o.customerId);
+    const restaurant = restaurants.find(r => r.id === o.restaurantId);
     const time = o.createdAt && o.createdAt.toDate
       ? o.createdAt.toDate().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })
       : "--:--";
@@ -511,6 +516,7 @@ async function renderTickets(orders){
           <span class="table">MEJA #${o.tableNumber ?? "-"}</span>
           <span class="time">${time}</span>
         </div>
+        <div class="resto-name">${restaurant ? restaurant.name : "Cabang tidak diketahui"}</div>
         <div class="cust">${customer ? customer.name : "Pelanggan tidak diketahui"}</div>
         <div class="items">
           ${items.map(i => `<div><span>${i.qty}× ${i.menuName}</span><span>${rupiah(i.subtotal)}</span></div>`).join("") || "<div>Tidak ada item</div>"}
