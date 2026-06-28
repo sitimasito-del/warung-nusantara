@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Warung Nusantara</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Poppins,Arial,sans-serif}
+body{background:#f6f8f7;color:#101828;min-height:100vh}
+.top{background:linear-gradient(120deg,#05351f,#005f34);color:#fff;padding:18px 34px;display:flex;align-items:center;justify-content:space-between;gap:24px;box-shadow:0 8px 28px rgba(0,0,0,.16)}
+.brand{display:flex;align-items:center;gap:13px}
+.logo{width:44px;height:44px;border:2px solid #fff;border-radius:10px;display:grid;place-items:center;font-size:24px}
+.brand h1{font-size:25px;line-height:1}
+.brand small{color:#d6f7df}
+.nav{display:flex;gap:22px}
+.nav span{padding:11px 22px;border-radius:10px;font-weight:600}
+.nav .active{background:#0b934b}
+.hours{display:flex;align-items:center;gap:12px;border-left:1px solid rgba(255,255,255,.28);padding-left:24px}
+.hours b{color:#27d373}
+.wrap{max-width:1440px;margin:auto;padding:28px 30px}
+.main{display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:24px;align-items:start}
+.left{display:grid;gap:22px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.box,.cart,.kitchen{background:#fff;border:1px solid #e1e7ef;border-radius:14px;box-shadow:0 10px 28px rgba(16,24,40,.08)}
+.box{padding:22px}
+.box h2{font-size:18px;margin-bottom:14px}
+select,input,textarea,button{font:inherit}
+select,input,textarea{width:100%;border:1px solid #d7dee8;border-radius:9px;padding:13px 14px;background:#fff;color:#1d2939;outline:none}
+textarea{min-height:86px;resize:vertical}
+select:focus,input:focus,textarea:focus{border-color:#088d4c;box-shadow:0 0 0 3px rgba(8,141,76,.12)}
+.branch-info{display:flex;gap:18px;align-items:center;color:#344054}
+.pin{width:44px;height:44px;background:#0b934b;color:#fff;border-radius:50%;display:grid;place-items:center;font-size:22px}
+.toolbar{display:flex;align-items:center;justify-content:space-between;gap:18px}
+.chips{display:flex;gap:12px;flex-wrap:wrap}
+.chip{border:1px solid #dce3ec;background:#fff;color:#344054;border-radius:999px;padding:10px 21px;cursor:pointer}
+.chip.active{background:#0b934b;color:#fff;border-color:#0b934b}
+.search{max-width:330px}
+.menu-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.menu-card{background:#fff;border:1px solid #e1e7ef;border-radius:12px;box-shadow:0 8px 24px rgba(16,24,40,.06);display:grid;grid-template-columns:150px 1fr;min-height:164px;overflow:hidden}
+.photo{background:linear-gradient(135deg,#e7f7ed,#fff4e8);display:grid;place-items:center;color:#0b6b3d;font-weight:700;text-align:center;padding:12px}
+.photo img{width:100%;height:100%;object-fit:cover;display:block}
+.menu-body{padding:18px;display:flex;flex-direction:column;gap:10px}
+.menu-body h3{font-size:17px}
+.tag{display:inline-flex;width:max-content;padding:5px 9px;border-radius:7px;background:#dcf8e6;color:#08733d;font-size:12px;font-weight:600}
+.tag.minuman{background:#dceeff;color:#075da5}
+.tag.camilan{background:#fff0cf;color:#b06400}
+.price{font-size:16px;font-weight:600}
+.add{margin-top:auto;border:1px solid #0b934b;background:#fff;color:#08733d;border-radius:8px;padding:8px 14px;cursor:pointer;font-weight:600}
+.add:hover{background:#ecfff4}
+.benefits{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;background:#fbfffc;border:1px solid #d9eadf;border-radius:12px;padding:20px}
+.benefit{display:flex;gap:12px;align-items:center;border-right:1px solid #d7e4dc}
+.benefit:last-child{border-right:none}
+.benefit b{display:block}
+.benefit span:first-child{font-size:35px;color:#0a6f3e}
+.cart{position:sticky;top:22px;padding:20px}
+.cart-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.count{width:28px;height:28px;background:#0b934b;color:#fff;border-radius:50%;display:grid;place-items:center;font-weight:700}
+.cart-item{display:grid;grid-template-columns:70px 1fr 22px;gap:14px;padding:13px 0;border-bottom:1px solid #edf1f5}
+.thumb{height:70px;border-radius:9px;background:linear-gradient(135deg,#e7f7ed,#fff4e8);display:grid;place-items:center;color:#0b6b3d;font-size:12px;text-align:center;overflow:hidden}
+.thumb img{width:100%;height:100%;object-fit:cover}
+.cart-item h3{font-size:15px}
+.cart-item small{color:#475467}
+.remove{background:transparent;border:none;color:#475467;font-size:20px;cursor:pointer}
+.qty{display:flex;align-items:center;gap:12px;margin-top:10px}
+.qty button{width:30px;height:30px;border:1px solid #d7dee8;background:#fff;border-radius:7px;color:#0b934b;cursor:pointer;font-weight:700}
+.item-total{color:#f04438;text-align:right;font-size:13px;margin-top:6px}
+.summary{border-top:1px dashed #ccd5df;border-bottom:1px solid #edf1f5;padding:16px 0;margin:14px 0;display:grid;gap:10px}
+.summary div{display:flex;justify-content:space-between;color:#475467}
+.summary .total{color:#101828;font-weight:700;font-size:18px}
+.summary .total span:last-child{color:#f04438;font-size:22px}
+.form{display:grid;gap:12px}
+.form label{font-size:13px;color:#344054}
+.order{margin-top:16px;background:#0b934b;color:#fff;border:none;border-radius:9px;padding:15px;cursor:pointer;font-weight:700;font-size:16px}
+.order:hover{background:#08733d}
+.kitchen{padding:22px}
+.kitchen h2{font-size:20px;margin-bottom:14px}
+.kitchen-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.kitchen-column{background:#f8fafc;border:1px solid #e1e7ef;border-radius:12px;padding:12px;min-height:150px}
+.kitchen-column h3{font-size:14px;text-transform:uppercase;letter-spacing:.06em;color:#475467;margin-bottom:10px}
+.order-card{background:#fff;border:1px solid #e1e7ef;border-radius:10px;padding:12px;margin-bottom:10px}
+.order-card b{display:block;margin-bottom:4px}
+.order-card small{display:block;color:#667085;margin-bottom:8px}
+.status-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.status-actions button{border:1px solid #d7dee8;background:#fff;color:#344054;border-radius:8px;padding:7px;cursor:pointer;font-size:12px}
+.status-actions button:hover{border-color:#0b934b;color:#0b934b}
+.setup{display:flex;gap:10px;margin-top:14px}
+.setup button{border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.12);color:#fff;border-radius:8px;padding:9px 11px;cursor:pointer}
+footer{text-align:center;color:#667085;padding:24px}
+@media(max-width:1100px){.main,.row{grid-template-columns:1fr}.cart{position:static}.menu-grid{grid-template-columns:repeat(2,1fr)}.kitchen-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:720px){.top{padding:16px;align-items:flex-start;flex-direction:column}.nav,.hours{display:none}.wrap{padding:18px}.menu-grid,.benefits,.kitchen-grid{grid-template-columns:1fr}.menu-card{grid-template-columns:120px 1fr}.benefit{border-right:none}.cart-item{grid-template-columns:58px 1fr 22px}}
+</style>
+</head>
+<body>
+<header class="top">
+<div>
+<div class="brand">
+<div class="logo">WN</div>
+<div>
+<h1>Warung Nusantara</h1>
+<small>Cita Rasa Indonesia</small>
+</div>
+</div>
+<div class="setup">
+<button id="seedData">Buat Data Awal</button>
+<button id="seedOrder">Buat Simulasi Order</button>
+</div>
+</div>
+<nav class="nav">
+<span class="active">Beranda</span>
+<span>Menu</span>
+<span>Pesanan Saya</span>
+</nav>
+<div class="hours">
+<span>08:00 - 21:00</span>
+<b>Buka</b>
+</div>
+</header>
+
+<div class="wrap">
+<main class="main">
+<section class="left">
+<div class="row">
+<div class="box">
+<h2>Pilih Restoran</h2>
+<select id="restaurantSelect">
+<option value="restaurant01">Warung Nusantara Jombang</option>
+<option value="restaurant02">Warung Nusantara Kediri</option>
+</select>
+</div>
+<div class="box branch-info">
+<div class="pin">i</div>
+<div>
+<p id="restaurantAddress">Jl. Ahmad Yani No. 5, Jombang</p>
+<p id="restaurantHours">08:00 - 21:00</p>
+</div>
+</div>
+</div>
+
+<div class="toolbar">
+<div>
+<h2>Menu Makanan & Minuman</h2>
+<div class="chips">
+<button class="chip active" data-category="Semua">Semua</button>
+<button class="chip" data-category="Makanan Utama">Makanan Utama</button>
+<button class="chip" data-category="Minuman">Minuman</button>
+<button class="chip" data-category="Camilan">Camilan</button>
+</div>
+</div>
+<input id="searchMenu" class="search" placeholder="Cari menu...">
+</div>
+
+<div id="menuList" class="menu-grid"></div>
+
+<div class="benefits">
+<div class="benefit"><span>01</span><div><b>Cepat & Mudah</b><small>Pesan makanan favorit dengan cepat.</small></div></div>
+<div class="benefit"><span>02</span><div><b>Aman & Terpercaya</b><small>Data pesanan tersimpan di Firebase.</small></div></div>
+<div class="benefit"><span>03</span><div><b>Dapur Siap Melayani</b><small>Pesanan masuk secara real-time.</small></div></div>
+</div>
+</section>
+
+<aside class="cart">
+<div class="cart-head">
+<h2>Pesanan Anda</h2>
+<div id="cartCount" class="count">0</div>
+</div>
+<div id="cartList"></div>
+
+<div class="summary">
+<div><span>Subtotal</span><span id="subtotalText">Rp 0</span></div>
+<div><span>Biaya tambahan</span><span id="taxText">Rp 0</span></div>
+<div class="total"><span>Total</span><span id="totalText">Rp 0</span></div>
+</div>
+
+<div class="form">
+<label>Customer ID</label>
+<input id="customerId" value="customer01" placeholder="customer01">
+<label>Nomor Meja</label>
+<input id="tableNumber" type="number" value="5" placeholder="Nomor Meja">
+<label>Catatan (Opsional)</label>
+<textarea id="note" placeholder="Contoh: Tidak pedas, tanpa bawang, dll."></textarea>
+</div>
+<button class="order" id="createOrder">Buat Pesanan</button>
+</aside>
+</main>
+
+<section class="kitchen">
+<h2>Admin Dapur - Pesanan Real-time</h2>
+<div class="kitchen-grid">
+<div class="kitchen-column"><h3>Pending</h3><div id="pendingOrders"></div></div>
+<div class="kitchen-column"><h3>Cooking</h3><div id="cookingOrders"></div></div>
+<div class="kitchen-column"><h3>Ready</h3><div id="readyOrders"></div></div>
+<div class="kitchen-column"><h3>Done</h3><div id="doneOrders"></div></div>
+</div>
+</section>
+</div>
+
+<footer>(c) 2025 Warung Nusantara. All rights reserved.</footer>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+import {
+getFirestore,collection,doc,onSnapshot,setDoc,addDoc,updateDoc,serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
+
+const firebaseConfig={
+apiKey:"AIzaSyCurBe6Lj3fhOzHm9GxJW14X71hWAW4S7A",
+authDomain:"masito-ec36d.firebaseapp.com",
+projectId:"masito-ec36d",
+storageBucket:"masito-ec36d.firebasestorage.app",
+messagingSenderId:"676622551092",
+appId:"1:676622551092:web:caeba81f259eb2164a6261"
+};
+
+const app=initializeApp(firebaseConfig);
+const db=getFirestore(app);
+
+const restaurants={
+restaurant01:{
+name:"Warung Nusantara Jombang",
+address:"Jl. Ahmad Yani No. 5",
+openHours:"08:00 - 21:00",
+menus:[
+{id:"menu01",name:"Nasi Rawon",price:35000,category:"Makanan Utama",available:true,imageUrl:"images/rawon.jpg"},
+{id:"menu02",name:"Soto Ayam",price:25000,category:"Makanan Utama",available:true,imageUrl:"images/soto.jpg"},
+{id:"menu03",name:"Ayam Geprek",price:28000,category:"Makanan Utama",available:true,imageUrl:"images/geprek.jpg"},
+{id:"menu04",name:"Es Teh",price:5000,category:"Minuman",available:true,imageUrl:"images/esteh.jpg"},
+{id:"menu05",name:"Jus Alpukat",price:12000,category:"Minuman",available:true,imageUrl:"images/alpukat.jpg"}
+]
+},
+restaurant02:{
+name:"Warung Nusantara Kediri",
+address:"Jl. Dhoho No. 18",
+openHours:"09:00 - 22:00",
+menus:[
+{id:"menu01",name:"Pecel Tumpang",price:18000,category:"Makanan Utama",available:true,imageUrl:"images/pecel-tumpang.jpg"},
+{id:"menu02",name:"Nasi Goreng Jawa",price:22000,category:"Makanan Utama",available:true,imageUrl:"images/nasi-goreng-jawa.jpg"},
+{id:"menu03",name:"Mie Goreng Jawa",price:20000,category:"Makanan Utama",available:true,imageUrl:"images/mie-goreng-jawa.jpg"},
+{id:"menu04",name:"Es Jeruk",price:7000,category:"Minuman",available:true,imageUrl:"images/es-jeruk.jpg"},
+{id:"menu05",name:"Kopi Hitam",price:8000,category:"Minuman",available:true,imageUrl:"images/kopi-hitam.jpg"}
+]
+}
+};
+
+const customers=[
+{id:"customer01",name:"Siti Masito",phone:"081234567890",loyaltyPoints:20},
+{id:"customer02",name:"Dara Putri Nata Sukma",phone:"081234567891",loyaltyPoints:15},
+{id:"customer03",name:"Yazkaa Zahaa Zdakiyah",phone:"081234567892",loyaltyPoints:30},
+{id:"customer04",name:"Mahasiswa Kelas B 04",phone:"081234567893",loyaltyPoints:0},
+{id:"customer05",name:"Mahasiswa Kelas B 05",phone:"081234567894",loyaltyPoints:0}
+];
+
+const menuList=document.getElementById("menuList");
+const restaurantSelect=document.getElementById("restaurantSelect");
+const restaurantAddress=document.getElementById("restaurantAddress");
+const restaurantHours=document.getElementById("restaurantHours");
+const searchMenu=document.getElementById("searchMenu");
+const orderColumns={
+pending:document.getElementById("pendingOrders"),
+cooking:document.getElementById("cookingOrders"),
+ready:document.getElementById("readyOrders"),
+done:document.getElementById("doneOrders")
+};
+let unsubscribeMenu=null;
+let daftarMenu=[];
+let cart=[];
+let activeCategory="Semua";
+
+function rupiah(value){
+return "Rp "+Number(value||0).toLocaleString("id-ID");
+}
+
+function foodFallback(name){
+return `<div class="photo">${name}</div>`;
+}
+
+function renderMenu(){
+const keyword=searchMenu.value.toLowerCase();
+const filtered=daftarMenu.filter(menu=>{
+const matchCategory=activeCategory==="Semua"||menu.category===activeCategory;
+const matchSearch=menu.name.toLowerCase().includes(keyword);
+return menu.available!==false&&matchCategory&&matchSearch;
+});
+
+menuList.innerHTML=filtered.map(menu=>`
+<div class="menu-card">
+${menu.imageUrl?`<div class="photo"><img src="${menu.imageUrl}" alt="${menu.name}" onerror="this.style.display='none';this.parentElement.textContent=this.alt"></div>`:foodFallback(menu.name)}
+<div class="menu-body">
+<h3>${menu.name}</h3>
+<span class="tag ${menu.category==="Minuman"?"minuman":menu.category==="Camilan"?"camilan":""}">${menu.category}</span>
+<div class="price">${rupiah(menu.price)}</div>
+<button class="add" onclick="tambahCart('${menu.id}')">+ Tambah</button>
+</div>
+</div>
+`).join("");
+}
+
+function loadMenu(){
+if(unsubscribeMenu){
+unsubscribeMenu();
+}
+
+const id=restaurantSelect.value;
+const selected=restaurants[id];
+restaurantAddress.textContent=selected.address+", "+(id==="restaurant01"?"Jombang":"Kediri");
+restaurantHours.textContent=selected.openHours;
+daftarMenu=[];
+
+unsubscribeMenu=onSnapshot(collection(db,"restaurants",id,"menus"),snapshot=>{
+daftarMenu=[];
+
+if(snapshot.empty){
+daftarMenu=selected.menus;
+}else{
+snapshot.forEach(d=>{
+daftarMenu.push({id:d.id,...d.data()});
+});
+}
+
+renderMenu();
+});
+}
+
+function renderCart(){
+const cartList=document.getElementById("cartList");
+const subtotal=cart.reduce((sum,item)=>sum+item.subtotal,0);
+const tax=0;
+const total=subtotal;
+
+document.getElementById("cartCount").textContent=cart.reduce((sum,item)=>sum+item.qty,0);
+document.getElementById("subtotalText").textContent=rupiah(subtotal);
+document.getElementById("taxText").textContent=rupiah(tax);
+document.getElementById("totalText").textContent=rupiah(total);
+
+if(cart.length===0){
+cartList.innerHTML="<p style='color:#667085;padding:18px 0'>Keranjang masih kosong.</p>";
+return;
+}
+
+cartList.innerHTML=cart.map((item,index)=>`
+<div class="cart-item">
+${item.imageUrl?`<div class="thumb"><img src="${item.imageUrl}" alt="${item.menuName}" onerror="this.style.display='none';this.parentElement.textContent=this.alt"></div>`:`<div class="thumb">${item.menuName}</div>`}
+<div>
+<h3>${item.menuName}</h3>
+<small>${rupiah(item.price)}</small>
+<div class="qty">
+<button onclick="kurangQty(${index})">-</button>
+<span>${item.qty}</span>
+<button onclick="tambahQty(${index})">+</button>
+</div>
+<div class="item-total">${rupiah(item.subtotal)}</div>
+</div>
+<button class="remove" onclick="hapusCart(${index})">x</button>
+</div>
+`).join("");
+}
+
+window.tambahCart=function(menuId){
+const menu=daftarMenu.find(item=>item.id===menuId);
+if(!menu){
+return;
+}
+
+const index=cart.findIndex(item=>item.menuId===menuId);
+if(index>-1){
+cart[index].qty++;
+cart[index].subtotal=cart[index].qty*cart[index].price;
+}else{
+cart.push({
+menuId:menu.id,
+menuName:menu.name,
+price:menu.price,
+qty:1,
+subtotal:menu.price,
+imageUrl:menu.imageUrl
+});
+}
+renderCart();
+};
+
+window.tambahQty=function(index){
+cart[index].qty++;
+cart[index].subtotal=cart[index].qty*cart[index].price;
+renderCart();
+};
+
+window.kurangQty=function(index){
+if(cart[index].qty>1){
+cart[index].qty--;
+cart[index].subtotal=cart[index].qty*cart[index].price;
+}else{
+cart.splice(index,1);
+}
+renderCart();
+};
+
+window.hapusCart=function(index){
+cart.splice(index,1);
+renderCart();
+};
+
+document.querySelectorAll(".chip").forEach(button=>{
+button.onclick=()=>{
+document.querySelectorAll(".chip").forEach(chip=>chip.classList.remove("active"));
+button.classList.add("active");
+activeCategory=button.dataset.category;
+renderMenu();
+};
+});
+
+searchMenu.oninput=renderMenu;
+restaurantSelect.onchange=()=>{
+cart=[];
+renderCart();
+loadMenu();
+};
+
+document.getElementById("seedData").onclick=async()=>{
+for(const restaurantId in restaurants){
+const restaurant=restaurants[restaurantId];
+await setDoc(doc(db,"restaurants",restaurantId),{
+name:restaurant.name,
+address:restaurant.address,
+openHours:restaurant.openHours
+});
+
+for(const menu of restaurant.menus){
+await setDoc(doc(db,"restaurants",restaurantId,"menus",menu.id),{
+name:menu.name,
+price:menu.price,
+category:menu.category,
+available:menu.available,
+imageUrl:menu.imageUrl
+});
+}
+}
+
+for(const customer of customers){
+await setDoc(doc(db,"customers",customer.id),{
+name:customer.name,
+phone:customer.phone,
+loyaltyPoints:customer.loyaltyPoints
+});
+}
+
+alert("Data restaurants, menus, dan customers berhasil dibuat.");
+};
+
+document.getElementById("seedOrder").onclick=async()=>{
+await setDoc(doc(db,"orders","order001"),{
+customerId:"customer01",
+restaurantId:"restaurant01",
+tableNumber:5,
+status:"pending",
+totalPrice:70000,
+createdAt:serverTimestamp()
+});
+
+await setDoc(doc(db,"orders","order001","orderItems","item01"),{
+menuId:"menu01",
+menuName:"Nasi Rawon",
+qty:2,
+unitPrice:35000,
+subtotal:70000
+});
+
+alert("Simulasi order001 dan item01 berhasil dibuat.");
+};
+
+document.getElementById("createOrder").onclick=async()=>{
+const customerId=document.getElementById("customerId").value.trim();
+const tableNumber=parseInt(document.getElementById("tableNumber").value);
+const restaurantId=restaurantSelect.value;
+
+if(!customerId||!tableNumber){
+alert("Isi Customer ID dan Nomor Meja.");
+return;
+}
+
+if(cart.length===0){
+alert("Pilih menu terlebih dahulu.");
+return;
+}
+
+const subtotal=cart.reduce((sum,item)=>sum+item.subtotal,0);
+const totalPrice=subtotal;
+const orderRef=await addDoc(collection(db,"orders"),{
+customerId,
+restaurantId,
+tableNumber,
+status:"pending",
+totalPrice,
+createdAt:serverTimestamp()
+});
+
+for(const [index,item] of cart.entries()){
+await setDoc(doc(db,"orders",orderRef.id,"orderItems","item"+String(index+1).padStart(2,"0")),{
+menuId:item.menuId,
+menuName:item.menuName,
+qty:item.qty,
+unitPrice:item.price,
+subtotal:item.subtotal
+});
+}
+
+cart=[];
+renderCart();
+alert("Pesanan berhasil dibuat.");
+};
+
+function renderKitchenOrder(orderId,order){
+return `
+<div class="order-card">
+<b>${orderId}</b>
+<small>Customer: ${order.customerId}</small>
+<small>Restoran: ${order.restaurantId}</small>
+<small>Meja: ${order.tableNumber}</small>
+<small>Total: ${rupiah(order.totalPrice)}</small>
+<div class="status-actions">
+<button onclick="ubahStatus('${orderId}','pending')">Pending</button>
+<button onclick="ubahStatus('${orderId}','cooking')">Cooking</button>
+<button onclick="ubahStatus('${orderId}','ready')">Ready</button>
+<button onclick="ubahStatus('${orderId}','done')">Done</button>
+</div>
+</div>
+`;
+}
+
+window.ubahStatus=async function(orderId,status){
+await updateDoc(doc(db,"orders",orderId),{status});
+};
+
+onSnapshot(collection(db,"orders"),snapshot=>{
+Object.values(orderColumns).forEach(column=>{
+column.innerHTML="<small style='color:#667085'>Belum ada pesanan.</small>";
+});
+
+const grouped={pending:[],cooking:[],ready:[],done:[]};
+snapshot.forEach(d=>{
+const order=d.data();
+const status=grouped[order.status]?order.status:"pending";
+grouped[status].push(renderKitchenOrder(d.id,order));
+});
+
+Object.keys(grouped).forEach(status=>{
+if(grouped[status].length>0){
+orderColumns[status].innerHTML=grouped[status].join("");
+}
+});
+});
+
+loadMenu();
+renderCart();
+</script>
+</body>
+</html>
