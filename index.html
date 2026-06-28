@@ -192,6 +192,37 @@
   }
   .delete-btn:hover{background:#b8503a; color:#fff;}
   .empty{color:var(--text-dim); font-size:13px; padding:20px 0; text-align:center;}
+
+  /* modal daftar pelanggan */
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(10,12,18,0.7); backdrop-filter:blur(2px);
+    display:flex; align-items:center; justify-content:center; z-index:50; padding:20px;
+  }
+  .modal-box{
+    background:var(--canvas); border:1px solid var(--line); border-radius:14px;
+    width:100%; max-width:560px; max-height:80vh; display:flex; flex-direction:column;
+    box-shadow:0 20px 50px rgba(0,0,0,0.4);
+  }
+  .modal-head{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:18px 20px; border-bottom:1px solid var(--line);
+  }
+  .modal-head h2{font-size:17px; color:var(--paper);}
+  .modal-close{
+    background:none; border:none; color:var(--text-dim); font-size:16px; cursor:pointer;
+    padding:4px 8px; border-radius:6px;
+  }
+  .modal-close:hover{color:var(--text); background:var(--canvas-2);}
+  .modal-body{padding:8px 12px 16px; overflow-y:auto;}
+  .customer-row{
+    display:flex; align-items:center; gap:10px; padding:10px 8px; border-bottom:1px solid var(--line);
+  }
+  .customer-row .info{flex:1; min-width:0;}
+  .customer-row .info .nm{font-weight:600; color:var(--paper); font-size:14px;}
+  .customer-row .info .ph{font-size:12px; color:var(--text-dim); font-family:'JetBrains Mono';}
+  .customer-row .pts{
+    font-family:'JetBrains Mono'; font-size:12px; color:var(--turmeric); white-space:nowrap;
+  }
 </style>
 </head>
 <body>
@@ -230,7 +261,10 @@
 
       <div class="order-form">
         <div>
-          <label for="customerSelect">Pelanggan</label>
+          <div style="display:flex; justify-content:space-between; align-items:baseline;">
+            <label for="customerSelect" style="margin-bottom:0;">Pelanggan</label>
+            <button type="button" id="openCustomerListBtn" class="link-btn">Lihat semua pelanggan</button>
+          </div>
           <select id="customerSelect"><option value="">Memuat pelanggan…</option></select>
           <button type="button" id="toggleNewCustomer" class="add-customer-btn">+ Tambah pelanggan baru</button>
 
@@ -265,6 +299,17 @@
     <div id="tickets" class="tickets"><p class="empty">Memuat pesanan…</p></div>
   </section>
 </main>
+
+<!-- ===================== MODAL DAFTAR PELANGGAN ===================== -->
+<div id="customerModalOverlay" class="modal-overlay" style="display:none;">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h2>Semua pelanggan</h2>
+      <button type="button" id="closeCustomerListBtn" class="modal-close">✕</button>
+    </div>
+    <div id="customerListBody" class="modal-body"></div>
+  </div>
+</div>
 
 <script>
 /* ======================================================================
@@ -390,7 +435,44 @@ db.collection("customers").onSnapshot(snap => {
   const sel = document.getElementById("customerSelect");
   sel.innerHTML = `<option value="">— pilih pelanggan —</option>` +
     customers.map(c => `<option value="${c.id}">${c.name} (${c.phone || "-"})</option>`).join("");
+  renderCustomerList(); // refresh juga isi modal kalau sedang terbuka
 });
+
+// ---------- 4a. Modal: lihat semua pelanggan ----------
+document.getElementById("openCustomerListBtn").addEventListener("click", () => {
+  renderCustomerList();
+  document.getElementById("customerModalOverlay").style.display = "flex";
+});
+document.getElementById("closeCustomerListBtn").addEventListener("click", () => {
+  document.getElementById("customerModalOverlay").style.display = "none";
+});
+document.getElementById("customerModalOverlay").addEventListener("click", e => {
+  if (e.target.id === "customerModalOverlay") e.target.style.display = "none";
+});
+
+function renderCustomerList(){
+  const body = document.getElementById("customerListBody");
+  if (!body) return;
+  if (!customers.length){
+    body.innerHTML = `<p class="empty">Belum ada pelanggan tersimpan</p>`;
+    return;
+  }
+  body.innerHTML = customers.map(c => `
+    <div class="customer-row">
+      <div class="info">
+        <div class="nm">${c.name}</div>
+        <div class="ph">${c.phone || "-"}</div>
+      </div>
+      <span class="pts">${c.loyaltyPoints ?? 0} poin</span>
+      <button class="delete-btn" onclick="deleteCustomer('${c.id}')">🗑</button>
+    </div>
+  `).join("");
+}
+
+function deleteCustomer(customerId){
+  if (!confirm("Hapus pelanggan ini dari daftar?")) return;
+  db.collection("customers").doc(customerId).delete().catch(err => alert("Gagal menghapus: " + err.message));
+}
 
 // ---------- 4b. Tambah pelanggan baru dari UI ----------
 document.getElementById("toggleNewCustomer").addEventListener("click", () => {
