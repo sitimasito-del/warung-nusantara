@@ -37,58 +37,90 @@ select:focus,input:focus,textarea:focus{border-color:#088d4c;box-shadow:0 0 0 3p
 .chip.active{background:#0b934b;color:#fff;border-color:#0b934b}
 .search{max-width:330px}
 .menu-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
-.menu-card{background:#fff;border:1px solid #e1e7ef;border-radius:12px;box-shadow:0 8px 24px rgba(16,24,40,.06);display:grid;grid-template-columns:150px 1fr;min-height:164px;overflow:hidden}
-.photo{background:linear-gradient(135deg,#e7f7ed,#fff4e8);display:grid;place-items:center;color:#0b6b3d;font-weight:700;text-align:center;padding:12px}
-.photo img{width:100%;height:100%;object-fit:cover;display:block}
-.menu-body{padding:18px;display:flex;flex-direction:column;gap:10px}
-.menu-body h3{font-size:17px}
-.tag{display:inline-flex;width:max-content;padding:5px 9px;border-radius:7px;background:#dcf8e6;color:#08733d;font-size:12px;font-weight:600}
-.tag.minuman{background:#dceeff;color:#075da5}
-.tag.camilan{background:#fff0cf;color:#b06400}
-.price{font-size:16px;font-weight:600}
-.add{margin-top:auto;border:1px solid #0b934b;background:#fff;color:#08733d;border-radius:8px;padding:8px 14px;cursor:pointer;font-weight:600}
-.add:hover{background:#ecfff4}
-.benefits{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;background:#fbfffc;border:1px solid #d9eadf;border-radius:12px;padding:20px}
-.benefit{display:flex;gap:12px;align-items:center;border-right:1px solid #d7e4dc}
-.benefit:last-child{border-right:none}
-.benefit b{display:block}
-.benefit span:first-child{font-size:35px;color:#0a6f3e}
-.cart{position:sticky;top:22px;padding:20px}
-.cart-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
-.count{width:28px;height:28px;background:#0b934b;color:#fff;border-radius:50%;display:grid;place-items:center;font-weight:700}
-.cart-item{display:grid;grid-template-columns:70px 1fr 22px;gap:14px;padding:13px 0;border-bottom:1px solid #edf1f5}
-.thumb{height:70px;border-radius:9px;background:linear-gradient(135deg,#e7f7ed,#fff4e8);display:grid;place-items:center;color:#0b6b3d;font-size:12px;text-align:center;overflow:hidden}
-.thumb img{width:100%;height:100%;object-fit:cover}
-.cart-item h3{font-size:15px}
-.cart-item small{color:#475467}
-.remove{background:transparent;border:none;color:#475467;font-size:20px;cursor:pointer}
-.qty{display:flex;align-items:center;gap:12px;margin-top:10px}
-.qty button{width:30px;height:30px;border:1px solid #d7dee8;background:#fff;border-radius:7px;color:#0b934b;cursor:pointer;font-weight:700}
-.item-total{color:#f04438;text-align:right;font-size:13px;margin-top:6px}
-.summary{border-top:1px dashed #ccd5df;border-bottom:1px solid #edf1f5;padding:16px 0;margin:14px 0;display:grid;gap:10px}
-.summary div{display:flex;justify-content:space-between;color:#475467}
-.summary .total{color:#101828;font-weight:700;font-size:18px}
-.summary .total span:last-child{color:#f04438;font-size:22px}
-.form{display:grid;gap:12px}
-.form label{font-size:13px;color:#344054}
-.order{margin-top:16px;background:#0b934b;color:#fff;border:none;border-radius:9px;padding:15px;cursor:pointer;font-weight:700;font-size:16px}
-.order:hover{background:#08733d}
-.kitchen{padding:22px}
-.kitchen h2{font-size:20px;margin-bottom:14px}
-.kitchen-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-.kitchen-column{background:#f8fafc;border:1px solid #e1e7ef;border-radius:12px;padding:12px;min-height:150px}
-.kitchen-column h3{font-size:14px;text-transform:uppercase;letter-spacing:.06em;color:#475467;margin-bottom:10px}
-.order-card{background:#fff;border:1px solid #e1e7ef;border-radius:10px;padding:12px;margin-bottom:10px}
-.order-card b{display:block;margin-bottom:4px}
-.order-card small{display:block;color:#667085;margin-bottom:8px}
-.status-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-.status-actions button{border:1px solid #d7dee8;background:#fff;color:#344054;border-radius:8px;padding:7px;cursor:pointer;font-size:12px}
-.status-actions button:hover{border-color:#0b934b;color:#0b934b}
-.setup{display:flex;gap:10px;margin-top:14px}
-.setup button{border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.12);color:#fff;border-radius:8px;padding:9px 11px;cursor:pointer}
-footer{text-align:center;color:#667085;padding:24px}
-@media(max-width:1100px){.main,.row{grid-template-columns:1fr}.cart{position:static}.menu-grid{grid-template-columns:repeat(2,1fr)}.kitchen-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:720px){.top{padding:16px;align-items:flex-start;flex-direction:column}.nav,.hours{display:none}.wrap{padding:18px}.menu-grid,.benefits,.kitchen-grid{grid-template-columns:1fr}.menu-card{grid-template-columns:120px 1fr}.benefit{border-right:none}.cart-item{grid-template-columns:58px 1fr 22px}}
+.menu-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+    gap:24px;
+}
+
+.menu-card{
+    background:#fff;
+    border-radius:18px;
+    overflow:hidden;
+    border:1px solid #e6edf2;
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+    transition:.3s;
+    display:flex;
+    flex-direction:column;
+}
+
+.menu-card:hover{
+    transform:translateY(-6px);
+    box-shadow:0 18px 35px rgba(0,0,0,.12);
+}
+
+.photo{
+    width:100%;
+    height:190px;
+    overflow:hidden;
+    background:#f4f4f4;
+}
+
+.photo img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    transition:.3s;
+}
+
+.menu-card:hover .photo img{
+    transform:scale(1.08);
+}
+
+.menu-body{
+    padding:18px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.menu-body h3{
+    font-size:22px;
+    font-weight:700;
+    line-height:1.3;
+    color:#132238;
+}
+
+.tag{
+    width:max-content;
+    padding:6px 12px;
+    border-radius:8px;
+    font-size:13px;
+    font-weight:600;
+}
+
+.price{
+    font-size:22px;
+    font-weight:700;
+    color:#111827;
+}
+
+.add{
+    margin-top:10px;
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    background:#0b934b;
+    color:white;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+}
+
+.add:hover{
+    background:#08763d;
+}
 </style>
 </head>
 <body>
@@ -284,13 +316,38 @@ return menu.available!==false&&matchCategory&&matchSearch;
 
 menuList.innerHTML=filtered.map(menu=>`
 <div class="menu-card">
-${menu.imageUrl?`<div class="photo"><img src="${menu.imageUrl}" alt="${menu.name}" onerror="this.style.display='none';this.parentElement.textContent=this.alt"></div>`:foodFallback(menu.name)}
-<div class="menu-body">
-<h3>${menu.name}</h3>
-<span class="tag ${menu.category==="Minuman"?"minuman":menu.category==="Camilan"?"camilan":""}">${menu.category}</span>
-<div class="price">${rupiah(menu.price)}</div>
-<button class="add" onclick="tambahCart('${menu.id}')">+ Tambah</button>
+
+<div class="photo">
+<img src="${menu.imageUrl}"
+alt="${menu.name}"
+onerror="this.src='https://placehold.co/400x300?text=${encodeURIComponent(menu.name)}'">
 </div>
+
+<div class="menu-body">
+
+<h3>${menu.name}</h3>
+
+<span class="tag ${
+menu.category=="Minuman"
+?"minuman"
+:menu.category=="Camilan"
+?"camilan"
+:""
+}">
+${menu.category}
+</span>
+
+<div class="price">
+${rupiah(menu.price)}
+</div>
+
+<button class="add"
+onclick="tambahCart('${menu.id}')">
++ Tambah
+</button>
+
+</div>
+
 </div>
 `).join("");
 }
